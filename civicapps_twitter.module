@@ -1,0 +1,35 @@
+<?php
+
+function civicapps_twitter_nodeapi(&$node, $op) {
+  if ($op == 'insert') {
+    watchdog('civicapps_twitter', t('node !title was inserted', array('!title' => $node->title)));
+  }
+}
+
+function civicapps_twitter_comment(&$comment, $op) {
+  if ($op == 'insert') {
+    $node = node_load($comment['nid']);
+    watchdog('civicapps_twitter', t('node !node was given comment #!comment', array('!node' => $node->title, '!comment' => $node->comment_count)));
+  }
+}
+
+function civicapps_twitter_votingapi_insert($votes) {
+  if ($votes[0]['content_type'] == 'node' /* && node type, etc. */) {
+    $results = votingapi_select_results(array('content_type' => 'node', 'content_id' => $votes[0]['content_id']));
+
+    $count   = NULL;
+    $average = NULL;
+
+    foreach ($results as $result) {
+      if ($result['function'] == 'count')
+        $count = $result['value'];
+      else if ($result['function'] == 'average')
+        $average = $result['value'];
+    }
+
+    if (TRUE /*$count == 5 && $average >= 80*/) {
+      $node = node_load($votes[0]['content_id']);
+      watchdog('civicapps_twitter', t('node !title was has reached !count ratings & averages !average%', array('!title' => $node->title, '!count' => $count, '!average' => $average)));
+    }
+  }
+}

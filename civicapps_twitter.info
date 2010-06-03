@@ -1,0 +1,6 @@
+name = CivicApps Twitter
+description = Auto-posts node activity to a Twitter account.
+core = 6.x
+dependencies[] = comment
+dependencies[] = votingapi
+dependencies[] = fivestar
